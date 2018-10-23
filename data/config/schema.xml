@@ -39,6 +39,13 @@ to save the current settings to XML.
 	</menu>
 
 	<!-- Gameplay preferences -->
+	<entry name="game/language" type="option_list" value="">
+		<limits>
+		<!-- Enum options added dynamically by scanning supported languages -->
+		</limits>
+		<short>Language</short>
+		<long>Language to show Performous in</long>
+	</entry>
 	<entry name="game/karaoke_mode" type="int" value="0">
 		<limits>
 			<enum>Off</enum>
@@ -82,7 +89,7 @@ to save the current settings to XML.
 	</entry>
 	<entry name="game/highscore_timeout" type="int" value="5">
 		<limits min="0" max="30" step="5" />
-		<short>High-score timeout</short>
+		<short>High-score timeout</short>audio
 		<long>How long the high-scores screen will wait for input before going to the next song.</long>
 	</entry>	
 	<entry name="game/webserver_access" type="int" value="0">
