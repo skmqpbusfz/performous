@@ -293,6 +293,14 @@ void writeConfig(bool system) {
 				Game::getSingletonPtr()->window().resetShaders();
 			}
 		}
+		if(name == "game/language") {
+			std::string oldValue = Game::getSingletonPtr()->getCurrentLanguage();
+			std::string newValue = item.so();
+			if(oldValue != newValue) {
+				std::cout << "Wanting to change something, new value: '" << newValue <<"'" <<std::endl;
+				Game::getSingletonPtr()->setLanguage(newValue);
+			}
+		}
 		if (name == "audio/backend") {
 			std::string currentBackEnd = Audio::backendConfig().oldValue;
 			int oldValue = PaHostApiNameToHostApiTypeId(currentBackEnd);
@@ -426,6 +434,18 @@ void readConfig() {
 	ConfigItem& ci = config["game/theme"];
 	for (std::string const& theme: getThemes()) ci.addEnum(theme);
 	if (ci.i() == -1) ci.selectEnum("default");  // Select the default theme if nothing is selected
+
+	ConfigItem::OptionList& languageConfigItem = config["game/language"].ol();
+	for (std::string const& language: TranslationEngine::GetAllLanguages()) {
+		bool add = false;
+		for(auto& item : languageConfigItem) {
+			if(language != item) {
+				add = true;
+				break;
+			}
+		}
+		if(add) { languageConfigItem.push_back(language); }
+	}
 }
 
 void populateBackends (const std::list<std::string>& backendList) {

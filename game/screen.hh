@@ -8,6 +8,7 @@
 #include "dialog.hh"
 #include "playlist.hh"
 #include "fbo.hh"
+#include "i18n.hh"
 
 #include <SDL2/SDL.h>
 #include <string>
@@ -48,7 +49,7 @@ class Screen {
 class Game: public Singleton <Game> {
   public:
 	/// constructor
-	Game(Window& window, Audio& audio);
+	Game(Window& window, Audio& audio, TranslationEngine& translationEngine);
 	~Game();
 	/// Adds a screen to the manager
 	void addScreen(std::unique_ptr<Screen> s) { 
@@ -104,14 +105,17 @@ class Game: public Singleton <Game> {
 	///global playlist access
 	PlayList& getCurrentPlayList() { return currentPlaylist; }
 
-private:
-	Audio& m_audio;
-	Window& m_window;
+	void setLanguage(const std::string language) { m_translationEngine.setLanguage(language); };
+
+	const std::string getCurrentLanguage() { return m_translationEngine.getCurrentLanguage(); };
 
 public:
 	input::Controllers controllers;
 
 private:
+	Audio& m_audio;
+	Window& m_window;
+	TranslationEngine& m_translationEngine;
 	bool m_finished;
 	typedef std::map<std::string, std::unique_ptr<Screen>> screenmap_t;
 	screenmap_t screens;
