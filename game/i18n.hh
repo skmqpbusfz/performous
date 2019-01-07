@@ -1,6 +1,7 @@
 #pragma once
 
 #include "fs.hh"
+#include "configuration.hh"
 
 #include <boost/locale.hpp>
 #include <iostream>
@@ -13,51 +14,68 @@
 class TranslationEngine {
 public:
 	TranslationEngine(const char *package) {
-		// boost::locale::generator gen;
+		boost::locale::generator gen;
+		gen.add_messages_path(getLocaleDir().string());
+		gen.add_messages_domain(package);
+		try {
+			std::locale::global(gen(boost::locale::util::get_system_locale(true)));
+			//auto locale = gen("");
+			//std::cout << "locale generated" << std::endl;
+			//std::locale::global(locale);
+			//std::cout << "Global locale set" << std::endl;
+			//std::cout << "Current global locale is " << locale.name();
+		} catch (...) {
+			std::clog << "locale/warning: Unable to detect locale, will try to fallback to en_US.UTF-8" << std::endl;
+			std::locale::global(gen("en_US.UTF-8"));
+		}
+		// boost::locale::generator gen;	
 		// gen.add_messages_path(getLocaleDir().string());
 		// gen.add_messages_domain(package);
-		// try {
-		// 	std::locale::global(gen(boost::locale::util::get_system_locale(true)));
-		// } catch (...) {
-		// 	std::clog << "locale/warning: Unable to detect locale, will try to fallback to en_US.UTF-8" << std::endl;
-		// 	std::locale::global(gen("en_US.UTF-8"));
+
+		m_package = package;
+		// auto languageFromConfig = config["game/language"].getEnumName();
+		// std::cout << "language from config is: '" << languageFromConfig << "'" << std::endl;
+		// if(languageFromConfig.empty()) {
+		// 	setLanguage("");
+		// } else {
+		// 	setLanguage(languageFromConfig);
 		// }
-		m_gen.add_messages_path(getLocaleDir().string());
-		m_gen.add_messages_domain(package);
-		setLanguage("");
 	};
 	static bool enabled() {
 		return true;
 	};
 
 	void setLanguage(const std::string language) { 
+		boost::locale::generator gen;	
+		gen.add_messages_path(getLocaleDir().string());
+		gen.add_messages_domain(m_package);
+
 		std::cout << "languag: '"<<language<<"'"<<std::endl;
 		m_currentLanguage = getLanguage(language);
 		std::cout << "found languag: '"<<m_currentLanguage<<"'"<<std::endl;
 
 		try {
-			std::locale::global(m_gen(m_currentLanguage));
-		std::cout << "lsetted correctly "<<std::endl;
+			//std::locale::global(m_gen(m_currentLanguage));
+			std::locale::global(gen("nl_NL.UTF-8"));
+			std::cout << "language setted correctly to: '"<< m_currentLanguage <<"'" << std::endl;
 		} catch (...) {
 			std::clog << "locale/warning: Unable to detect locale, will try to fallback to en_US.UTF-8" << std::endl;
-			std::locale::global(m_gen("en_US.UTF-8"));	
+			std::locale::global(gen("en_US.UTF-8"));	
 		}
 	}
 
 	const std::string getLanguage(const std::string language) { 
 		if(language.empty()) {
-		std::cout << "language empty "<<std::endl;
-			return "";
+			auto lan = boost::locale::util::get_system_locale(true);
+			std::cout << "No given language.. using default system language: '" << lan << "''" << std::endl;
+			return lan;
 		}
-		return *std::find(m_languages().begin(), m_languages().end(), language); 
+		return *std::find(GetAllLanguages().begin(), GetAllLanguages().end(), language); 
 	}
 
 	const std::string getCurrentLanguage() { return m_currentLanguage; }
-	static const std::vector<std::string> GetAllLanguages() { return m_languages(); }
+	std::vector<std::string> GetAllLanguages() { return config["game/language"].getAllEnumStringValues(); }
 private:
 	std::string m_currentLanguage;
-	boost::locale::generator m_gen;
-	static const std::vector<std::string> m_languages() { 
-		return {"en", "nl", "de", "ast", "da", "es", "fa", "fi", "fr", "hu", "it", "ja", "pl","pt","sv", "zh"};
-	}
+	const char *m_package;
 };

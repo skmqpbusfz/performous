@@ -43,6 +43,7 @@ class ConfigItem {
 	void selectEnum(std::string const& name); ///< Set integer value by enum name
 	std::string const getEnumName() const; ///< Returns the selected enum option's text
 	std::string oldValue;
+	std::vector<std::string> getAllEnumStringValues();
 	
   private:
 	template <typename T> void updateNumeric(xmlpp::Element& elem, int mode); ///< Used internally for loading XML

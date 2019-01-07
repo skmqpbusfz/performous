@@ -165,6 +165,14 @@ namespace {
 	}
 }
 
+std::vector<std::string> ConfigItem::getAllEnumStringValues() {
+	std::vector<std::string> allEnumStringValues;
+	for(auto& item : m_enums) {
+		allEnumStringValues.push_back(item);
+	}
+	return allEnumStringValues;
+}
+
 void ConfigItem::addEnum(std::string name) {
 	verifyType("int");
 	if (find(m_enums.begin(),m_enums.end(),name) == m_enums.end()) {
@@ -295,9 +303,9 @@ void writeConfig(bool system) {
 		}
 		if(name == "game/language") {
 			std::string oldValue = Game::getSingletonPtr()->getCurrentLanguage();
-			std::string newValue = item.so();
+			std::string newValue = item.getEnumName();
 			if(oldValue != newValue) {
-				std::cout << "Wanting to change something, new value: '" << newValue <<"'" <<std::endl;
+				std::cout << "Wanting to change something, old value: '" << oldValue << "' new value: '" << newValue <<"'" <<std::endl;
 				Game::getSingletonPtr()->setLanguage(newValue);
 			}
 		}
@@ -435,17 +443,17 @@ void readConfig() {
 	for (std::string const& theme: getThemes()) ci.addEnum(theme);
 	if (ci.i() == -1) ci.selectEnum("default");  // Select the default theme if nothing is selected
 
-	ConfigItem::OptionList& languageConfigItem = config["game/language"].ol();
-	for (std::string const& language: TranslationEngine::GetAllLanguages()) {
-		bool add = false;
-		for(auto& item : languageConfigItem) {
-			if(language != item) {
-				add = true;
-				break;
-			}
-		}
-		if(add) { languageConfigItem.push_back(language); }
-	}
+	// ConfigItem::OptionList& languageConfigItem = config["game/language"].ol();
+	// for (std::string const& language: TranslationEngine::GetAllLanguages()) {
+	// 	bool add = false;
+	// 	for(auto& item : languageConfigItem) {
+	// 		if(language != item) {
+	// 			add = true;
+	// 			break;
+	// 		}
+	// 	}
+	// 	if(add) { languageConfigItem.push_back(language); }
+	// }
 }
 
 void populateBackends (const std::list<std::string>& backendList) {

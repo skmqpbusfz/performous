@@ -39,9 +39,24 @@ to save the current settings to XML.
 	</menu>
 
 	<!-- Gameplay preferences -->
-	<entry name="game/language" type="option_list" value="">
+	<entry name="game/language" type="int" value="0">
 		<limits>
-		<!-- Enum options added dynamically by scanning supported languages -->
+			<enum>en_US.UTF-8</enum>
+			<enum>nl_NL.UTF-8</enum>
+			<enum>de_DE.UTF-8</enum>
+			<enum>ast</enum>
+			<enum>da</enum>
+			<enum>es</enum>
+			<enum>fa</enum>
+			<enum>fi</enum>
+			<enum>fr</enum>
+			<enum>hu</enum>
+			<enum>it</enum>
+			<enum>ja</enum>
+			<enum>pl</enum>
+			<enum>pt</enum>
+			<enum>sv</enum>
+			<enum>zh</enum>
 		</limits>
 		<short>Language</short>
 		<long>Language to show Performous in</long>
