@@ -5,6 +5,7 @@
 #include "libxml++-impl.hh"
 #include "unicode.hh"
 #include <boost/filesystem.hpp>
+#include <boost/regex.hpp>
 #include <SDL2/SDL_joystick.h>
 #include <deque>
 #include <regex>
@@ -101,7 +102,7 @@ struct ControllerDef {
 	SourceType sourceType;
 	DevType devType;
 	double latency;
-	std::regex deviceRegex;
+	boost::regex deviceRegex;
 	MinMax<unsigned> deviceMinMax;
 	MinMax<unsigned> channelMinMax;
 	ButtonMapping mapping;

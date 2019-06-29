@@ -6,6 +6,7 @@
 
 #include "../unicode.hh"
 #include "../platform.hh"
+#include <boost/regex.hpp>
 #include <portaudio.h>
 #include <cstdint>
 #include <cstdlib>
@@ -92,7 +93,7 @@ namespace portaudio {
 					{ " \\(.*\\)", "" },  // Remove the parenthesis part entirely
 				};
 				for (auto const& rep: replacements) {
-					std::string flex = std::regex_replace(dev.flex, std::regex(rep[0]), rep[1]);
+					std::string flex = boost::regex_replace(dev.flex, boost::regex(rep[0]), rep[1]);
 					if (flex == dev.flex) continue;  // Nothing changed
 					// Verify that flex doesn't find any wrong devices
 					bool fail = false;

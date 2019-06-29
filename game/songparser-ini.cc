@@ -2,6 +2,7 @@
 
 #include "unicode.hh"
 #include <boost/algorithm/string.hpp>
+#include <boost/regex.hpp>
 #include <stdexcept>
 #include "midifile.hh"
 

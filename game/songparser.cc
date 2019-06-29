@@ -2,7 +2,7 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem/fstream.hpp>
-#include <regex>
+#include <boost/regex.hpp>
 
 
 namespace SongParserUtil {
@@ -128,7 +128,7 @@ void SongParser::guessFiles () {
 	std::string logMissing, logFound;
 
 	// Run checks, remove bogus values and construct regexps
-	std::vector<std::regex> regexps;
+	std::vector<boost::regex> regexps;
 	bool missing = false;
 	for (auto const& p : fields) {
 		fs::path& file = *p.first;
@@ -136,13 +136,11 @@ void SongParser::guessFiles () {
 			logMissing += "  " + file.filename().string();
 			file.clear();
 		}
-		if (file.empty()) { missing = true; }
-		regexps.emplace_back (p.second, std::regex_constants::icase);
+		if (file.empty()) missing = true;
+		regexps.emplace_back(p.second, boost::regex_constants::icase);
 	}
-	
 	if (!missing) {
 		return;	// All OK!
-	}
 	// Try matching all files in song folder with any field
 	std::set<fs::path> files (fs::directory_iterator {m_song.path}, fs::directory_iterator {});
 	for (unsigned i = 0; i < fields.size(); ++i) {

@@ -18,6 +18,7 @@
 
 #include <boost/filesystem.hpp>
 #include <boost/format.hpp>
+#include <boost/regex.hpp>
 #include <unicode/stsearch.h>
 
 #ifdef USE_WEBSERVER
@@ -233,7 +234,7 @@ void Songs::CacheSonglist() { }
 void Songs::reload_internal(fs::path const& parent) {
 	if (std::distance(parent.begin(), parent.end()) > 20) { std::clog << "songs/info: >>> Not scanning: " << parent.string() << " (maximum depth reached, possibly due to cyclic symlinks)\n"; return; }
 	try {
-		std::regex expression(R"((\.txt|^song\.ini|^notes\.xml|\.sm)$)", std::regex_constants::icase);
+		boost::regex expression(R"((\.txt|^song\.ini|^notes\.xml|\.sm)$)", boost::regex_constants::icase);
 		for (fs::directory_iterator dirIt(parent), dirEnd; m_loading && dirIt != dirEnd; ++dirIt) { //loop through files
 			fs::path p = dirIt->path();
 			if (fs::is_directory(p)) { reload_internal(p); continue; } //if the file is a folder redo this function with this folder as path
